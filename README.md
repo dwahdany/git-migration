@@ -1,6 +1,6 @@
 # Git Repository Migration Tool
 
-This script helps migrate Git repositories from one remote (e.g., GitLab) to new private GitHub repositories. It creates new private repositories on GitHub and updates the remote URLs of existing repositories.
+This script helps migrate Git repositories from one remote (e.g., GitLab) to new private GitHub repositories. The repositories must be cloned locally. It creates new private repositories on GitHub and updates the remote URLs of existing repositories.
 
 ## Prerequisites
 
