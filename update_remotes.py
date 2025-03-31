@@ -67,6 +67,19 @@ def update_remote(path, new_remote_url):
         print(f"✗ Failed to update/push to remote for {path}: {e}")
         return False
 
+def repo_exists(name):
+    """Check if a repository exists on GitHub."""
+    try:
+        # Try to get the repository info
+        subprocess.run(
+            ['gh', 'repo', 'view', name],
+            capture_output=True,
+            check=True
+        )
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
 def process_repository(directory):
     """Process a single repository directory."""
     print(f"\nProcessing {directory}...")
@@ -78,6 +91,12 @@ def process_repository(directory):
     current_remote = get_current_remote(directory)
     if current_remote:
         print(f"Current remote: {current_remote}")
+        
+        # Check if repository already exists
+        new_name = f"migration25-{directory.name}"
+        if repo_exists(new_name):
+            print(f"✓ Repository {new_name} already exists, skipping...")
+            return True
         
         # Create new repository on GitHub
         new_repo_url = create_github_repo(directory.name)
@@ -122,10 +141,13 @@ def list_repositories(repos):
     for repo in repos:
         if is_git_repo(repo):
             remote = get_current_remote(repo)
+            new_name = f"migration25-{repo.name}"
+            exists = repo_exists(new_name)
             print(f"Repository: {repo.name}")
             print(f"Path: {repo}")
             print(f"Current remote: {remote if remote else 'No remote'}")
-            print(f"New name will be: migration25-{repo.name}")
+            print(f"New name will be: {new_name}")
+            print(f"Status: {'Already exists on GitHub' if exists else 'Will be created'}")
             print("-" * 80)
         else:
             print(f"Repository: {repo.name}")
